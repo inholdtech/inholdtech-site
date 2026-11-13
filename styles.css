@@ -125,3 +125,4 @@ header .btn:hover{background:#0a0a0a;color:#fff}
 .points b{font-weight:700}
 #heroVideo{filter:grayscale(1) contrast(1.1)}
 #net{transition:opacity .8s}
+.hs-wrap{background:#fff;border:1px solid var(--line);padding:8px 8px 0;min-height:420px}

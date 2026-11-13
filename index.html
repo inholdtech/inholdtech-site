@@ -132,27 +132,11 @@
       </ul>
     </div>
     <div>
-      <form id="assessForm" novalidate>
-        <div class="row2">
-          <div><label for="name">Full name</label><input id="name" name="name" required autocomplete="name"></div>
-          <div><label for="email">Work email</label><input id="email" name="email" type="email" required autocomplete="email"></div>
-        </div>
-        <div class="row2">
-          <div><label for="company">Company</label><input id="company" name="company" required autocomplete="organization"></div>
-          <div><label for="country">Country</label>
-            <select id="country" name="country"><option>Saudi Arabia</option><option>United Arab Emirates</option><option>Egypt</option><option>Qatar</option><option>Kuwait</option><option>Bahrain</option><option>Oman</option><option>Jordan</option><option>Other</option></select></div>
-        </div>
-        <div class="row2">
-          <div><label for="need">What do you need?</label>
-            <select id="need" name="need"><option>IT &amp; security assessment</option><option>Microsoft 365 / Google Workspace admin</option><option>Security &amp; identity</option><option>NCA / PDPL compliance</option><option>AI readiness &amp; security</option><option>Backup &amp; recovery</option><option>Migration</option><option>Device management</option><option>Ongoing IT support</option><option>Other</option></select></div>
-          <div><label for="users">Number of users</label>
-            <select id="users" name="users"><option>1–25</option><option>26–100</option><option>101–500</option><option>500+</option></select></div>
-        </div>
-        <div><label for="msg">Anything specific? (optional)</label><textarea id="msg" name="msg" rows="2"></textarea></div>
-        <label class="consent"><input type="checkbox" id="consent" required><span>I agree that Inhold Tech may contact me about my request, as described in the <a href="privacy.html">Privacy Policy</a>.</span></label>
-        <button class="btn" type="submit">Send request</button>
-        <p class="small" id="formNote">Submitting opens your email app with the details filled in. Prefer chat? Use the WhatsApp button.</p>
-      </form>
+      <div class="hs-wrap">
+        <script src="https://js-eu1.hsforms.net/forms/embed/149771959.js" defer></script>
+        <div class="hs-form-frame" data-region="eu1" data-form-id="36c48a53-057d-4d5a-b6fd-26a2a5cd9d84" data-portal-id="149771959"></div>
+      </div>
+      <p class="small" style="margin-top:12px">By submitting this form you agree to our <a href="privacy.html">Privacy Policy</a>. Prefer to talk? <a class="js-book" href="#contact">Book a consultation</a>.</p>
     </div>
   </div>
 </section>
@@ -210,16 +194,6 @@ document.querySelectorAll('.js-wa').forEach(function(a){
 });
 document.querySelectorAll('.js-book').forEach(function(a){
   if(CONFIG.booking){a.href=CONFIG.booking;a.target='_blank';a.rel='noopener';}
-});
-document.getElementById('assessForm').addEventListener('submit',function(e){
-  e.preventDefault();
-  var f=this, note=document.getElementById('formNote');
-  if(!f.name.value||!f.email.value||!f.company.value){note.textContent='Please fill in your name, work email and company.';return;}
-  if(!document.getElementById('consent').checked){note.textContent='Please tick the consent box so we can contact you.';return;}
-  var body='Name: '+f.name.value+'\nEmail: '+f.email.value+'\nCompany: '+f.company.value+'\nCountry: '+f.country.value+'\nNeed: '+f.need.value+'\nUsers: '+f.users.value+'\n\n'+f.msg.value;
-  window.location.href='mailto:'+CONFIG.email+'?subject='+encodeURIComponent('Enquiry: '+f.need.value+' – '+f.company.value)+'&body='+encodeURIComponent(body);
-  if(window.fbq){fbq('track','Lead');}
-  note.textContent='Your email app should open now. If it doesn\'t, email us at '+CONFIG.email+'.';
 });
 
 /* Hero video: show only if hero.mp4 loads */
