@@ -132,11 +132,32 @@
       </ul>
     </div>
     <div>
-      <div class="hs-wrap">
-        <script src="https://js-eu1.hsforms.net/forms/embed/149771959.js" defer></script>
-        <div class="hs-form-frame" data-region="eu1" data-form-id="36c48a53-057d-4d5a-b6fd-26a2a5cd9d84" data-portal-id="149771959"></div>
-      </div>
-      <p class="small" style="margin-top:12px">By submitting this form you agree to our <a href="privacy.html">Privacy Policy</a>. Prefer to talk? <a class="js-book" href="#contact">Book a consultation</a>.</p>
+      <form id="leadForm" novalidate>
+        <div class="row2">
+          <div><label for="fn">First name</label><input id="fn" name="firstname" required autocomplete="given-name"></div>
+          <div><label for="ln">Last name</label><input id="ln" name="lastname" required autocomplete="family-name"></div>
+        </div>
+        <div class="row2">
+          <div><label for="em">Work email</label><input id="em" name="email" type="email" required autocomplete="email"></div>
+          <div><label for="ph">Phone / WhatsApp</label><input id="ph" name="phone" type="tel" autocomplete="tel" placeholder="+966 ..."></div>
+        </div>
+        <div class="row2">
+          <div><label for="co">Company</label><input id="co" name="company" required autocomplete="organization"></div>
+          <div><label for="ct">Country</label>
+            <select id="ct" name="country"><option>Saudi Arabia</option><option>United Arab Emirates</option><option>Egypt</option><option>Qatar</option><option>Kuwait</option><option>Bahrain</option><option>Oman</option><option>Jordan</option><option>Other</option></select></div>
+        </div>
+        <div class="row2">
+          <div><label for="nd">What do you need?</label>
+            <select id="nd" name="need"><option>IT &amp; security assessment</option><option>Microsoft 365 / Google Workspace admin</option><option>Security &amp; identity</option><option>NCA / PDPL compliance</option><option>AI readiness &amp; security</option><option>Backup &amp; recovery</option><option>Migration</option><option>Device management</option><option>Ongoing IT support</option><option>Other</option></select></div>
+          <div><label for="us">Number of users</label>
+            <select id="us" name="users"><option>1–25</option><option>26–100</option><option>101–500</option><option>500+</option></select></div>
+        </div>
+        <div><label for="msg">Anything specific? (optional)</label><textarea id="msg" name="message" rows="3"></textarea></div>
+        <label class="consent"><input type="checkbox" id="consent" required><span>I agree that Inhold Tech may store and process my personal data to respond to my request, as described in the <a href="privacy.html">Privacy Policy</a>.</span></label>
+        <input type="text" name="website" id="hp" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
+        <button class="btn" type="submit" id="leadBtn">Send request</button>
+        <p class="small" id="formNote" role="status">Prefer to talk? <a class="js-book" href="#contact">Book a consultation</a>.</p>
+      </form>
     </div>
   </div>
 </section>
@@ -195,6 +216,36 @@ document.querySelectorAll('.js-wa').forEach(function(a){
 document.querySelectorAll('.js-book').forEach(function(a){
   if(CONFIG.booking){a.href=CONFIG.booking;a.target='_blank';a.rel='noopener';}
 });
+
+
+/* Lead form -> HubSpot (form 36c48a53..., EU data centre) */
+(function(){
+  var f=document.getElementById('leadForm'); if(!f) return;
+  var note=document.getElementById('formNote'), btn=document.getElementById('leadBtn');
+  var URL='https://api-eu1.hsforms.com/submissions/v3/integration/submit/149771959/36c48a53-057d-4d5a-b6fd-26a2a5cd9d84';
+  function cookie(n){var m=document.cookie.match('(^|;)\\s*'+n+'=([^;]+)');return m?m[2]:undefined;}
+  f.addEventListener('submit',function(e){
+    e.preventDefault();
+    if(f.website.value) return; /* spam trap */
+    if(!f.firstname.value.trim()||!f.lastname.value.trim()||!f.company.value.trim()||!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(f.email.value)){note.textContent='Please fill in your name, a valid work email and your company.';return;}
+    if(!document.getElementById('consent').checked){note.textContent='Please tick the consent box so we can contact you.';return;}
+    var details='Need: '+f.need.value+'\nUsers: '+f.users.value+'\nCountry: '+f.country.value+(f.message.value.trim()?'\n\n'+f.message.value.trim():'');
+    var ctx={pageUri:location.href,pageName:document.title}; var hutk=cookie('hubspotutk'); if(hutk) ctx.hutk=hutk;
+    var body={fields:[
+      {name:'firstname',value:f.firstname.value.trim()},{name:'lastname',value:f.lastname.value.trim()},
+      {name:'email',value:f.email.value.trim()},{name:'phone',value:f.phone.value.trim()},
+      {name:'company',value:f.company.value.trim()},{name:'message',value:details}],
+      context:ctx,
+      legalConsentOptions:{consent:{consentToProcess:true,text:'I agree that Inhold Tech may store and process my personal data to respond to my request, as described in the Privacy Policy.'}}};
+    btn.disabled=true; btn.textContent='Sending...';
+    fetch(URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
+      .then(function(r){ if(!r.ok) throw new Error(r.status); 
+        f.innerHTML='<h3>Thank you, we have your request.</h3><p class="small" style="margin-top:8px">An engineer will contact you within one business day. Want to pick a time now? <a href="'+CONFIG.booking+'" target="_blank" rel="noopener">Book a consultation</a>.</p>';
+        if(window.fbq){fbq('track','Lead');} })
+      .catch(function(){ btn.disabled=false; btn.textContent='Send request';
+        note.innerHTML='Sorry, something went wrong. Please email us at <a href="mailto:'+CONFIG.email+'">'+CONFIG.email+'</a>.'; });
+  });
+})();
 
 /* Hero video: show only if hero.mp4 loads */
 (function(){var v=document.getElementById('heroVideo'); if(!v) return;
