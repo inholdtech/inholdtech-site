@@ -13,7 +13,21 @@
 <link rel="icon" href="favicon.png" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="stylesheet" href="styles.css">
-<!-- META PIXEL: paste the Meta Pixel base code here once your Meta Business account is set up -->
+<!-- Meta Pixel (dataset "Inhold Tech website") -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1981705666520304');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none" alt="" src="https://www.facebook.com/tr?id=1981705666520304&ev=PageView&noscript=1"></noscript>
+<!-- End Meta Pixel -->
 <!-- GOOGLE ANALYTICS (GA4): paste the gtag.js snippet here -->
 </head>
 <body>
@@ -245,6 +259,19 @@ document.querySelectorAll('.js-book').forEach(function(a){
       .catch(function(){ btn.disabled=false; btn.textContent='Send request';
         note.innerHTML='Sorry, something went wrong. Please email us at <a href="mailto:'+CONFIG.email+'">'+CONFIG.email+'</a>.'; });
   });
+})();
+
+/* Meta Pixel extra events: form seen, booking/email/WhatsApp clicks */
+(function(){
+  if(!window.fbq) return;
+  var form=document.getElementById('leadForm'), seen=false;
+  if(form && 'IntersectionObserver' in window){
+    new IntersectionObserver(function(es,o){es.forEach(function(e){
+      if(e.isIntersecting && !seen){seen=true; fbq('track','ViewContent',{content_name:'Contact form'}); o.disconnect();}
+    });},{threshold:0.4}).observe(form);
+  }
+  document.querySelectorAll('.js-book').forEach(function(a){a.addEventListener('click',function(){fbq('track','Schedule');});});
+  document.querySelectorAll('.js-mail,.js-wa').forEach(function(a){a.addEventListener('click',function(){fbq('track','Contact');});});
 })();
 
 /* Hero video: show only if hero.mp4 loads */
